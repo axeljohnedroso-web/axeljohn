@@ -28,3 +28,123 @@ plot(pressure)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+a <- 17
+b <-5
+
+a + b
+a - b
+a * b
+a / b
+```
+```{r}
+a %% b
+a %/% b
+```
+```{r}
+2 ^ 10
+```
+Question#1
+```{r}
+17 / 5
+17 %% 5
+17 %/% 5
+```
+Question#2
+```{r}
+1
+3
+10 %% 3
+10 %/% 3
+```
+```{r}
+x <- 42
+y <- 42L
+z <- "42"
+w <- TRUE
+v <- 3 + 2i
+typeof(x)
+typeof(y)
+typeof(z)
+typeof(w)
+typeof(v)
+```
+```{r}
+class(x)
+class(y)
+class(z)
+class(w)
+class(v)
+```
+```{r}
+mode(x)
+mode(y)
+mode(z)
+mode(w)
+mode(v)
+```
+Question#3
+x <- 42 is stored as a double (decimal number) by default
+y <- 42L uses the L suffix to force R to store it as an integer (whole number)
+Question#4
+Yes, For x: typeof(x) is "double" , but class(x) and mode(x) are "numeric". For a factor: typeof() is "integer", class() is "factor", and mode() is "numeric". For a matrix: typeof() is "double", class() is "matrix" "array", and mode() is "numeric".
+```{r}
+num_string <- "123"
+num_value <- as.numeric(num_string)
+typeof(num_value)
+class(num_value)
+mode(num_value)
+```
+```{r}
+as.logical(0)
+as.logical(1)
+```
+```{r}
+bad_string <- "hello123"
+bad_value  <- as.numeric(bad_string)
+
+bad_value
+```
+Question#5
+R is designed for data analysis on large datasets where a few invalid entries shouldn't stop the entire workflow. returning NA allows the rest of the script to continue running without crashing
+
+NA values can prpagate silently through downstream calculations, resulting in missing values skewed analysis withiut you realizing the data we lost.
+Question#6
+```{r}
+as.logical(2)
+as.logical(-1)
+```
+```{r}
+first_name <- "Juan"
+last_name <- "Dela Cruz"
+
+print(first_name)
+print(last_name)
+```
+```{r}
+paste(first_name, last_name)
+paste0(first_name, last_name)
+```
+```{r}
+paste(first_name, last_name, sep = "-")
+```
+```{r}
+full_name <- paste(first_name, last_name)
+paste0(full_name, " is ", 21, "years old.")
+```
+Question#7
+No, it did mot cause an error.  paste0() automatically coerces non-character arguments(like the numeric variable age) into character strings.
+Question#8
+No, this did not cause an error. paste0() performs implicit type conversion (coercion), automatically converting non-character inputs like the numeric variable age into a character string before combining them. this is equivalent to explicity wrapping age with
+as.character(age).
+```{r}
+as.numeric("5") + 5
+# Output: 10
+```
+Question#9
+R requires explicit type conversion to enforce strict type safety and prevent silent logic errors. Implicitly attempting to guess intent can lead to hidden bugs if a string contains non-numeric text, so R requires proogrammers to clearly state conversion intent
+Question#10
+the "numbers" column was probably read in as character, not numeric, often because of stray text like "N/A", "$", commas,  or spaces. Since sum() can't add strings, it errors. To diagnose, check typeof(), class(), and str(), the look for odd values with unique() or is.na(as.numeric(x)). To fix, clean the bad values(gsub()), convert with as.numeric(), watch for coercion warnings, and confirm with class() before summing.
+
+Conclusion
+Every value in R has a type, and operators only work the type,and compatible. typeof() and class() reveal what R thinks a value is, and convesion functions like as.numeric(), as.character(), and as.logical() changes types on purpose. Checking and converting types first prevents errors and wrong results.

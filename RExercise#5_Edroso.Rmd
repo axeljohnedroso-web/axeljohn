@@ -1,0 +1,162 @@
+---
+title: "RExercise#5_Edroso.Rmd"
+author: "Axel John M. Edroso"
+date: "2026-11-04"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+m1 <- matrix(1:9, nrow = 3, ncol = 3)
+print(m1)
+```
+```{r}
+m2 <- matrix(1:9, nrow = 3, ncol = 3)
+print(m2)
+```
+```{r}
+scores <- matrix(c(88, 92, 79, 95, 84, 90), nrow = 2, ncol = 3, byrow = TRUE)
+rownames(scores) <- c("Quiz1", "Quiz2")
+colnames(scores) <- c("Ana", "Ben", "Cid")
+print(scores)
+Question#1
+m1 and m2 hold the same numbers (1 to 9) in the same 3x3 shape, but R places them in different orders. By default (byrow = FALSE), R fills a matrix column by column: it fills the whole first column (1, 2, 3), then the second (4, 5, 6), then the third (7, 8, 9). With byrow = TRUE, R fills row by row: the first row gets 1, 2, 3, the second gets 4, 5, 6, and the third gets 7, 8, 9. The only thing byrow changes is the direction in which the values are placed. The data, the dimensions, and the order of the input vector stay the same. As a result, m2 is the transpose of m1.
+Questoin#2
+```{r}
+m3 <- matrix(1:9, nrow = 3, ncol = 3)
+print(m3)
+Explanation
+R does not stop with an error. It uses recycling: when the data runs out, it starts again from the beginning of the vector. The ninth slot gets the value 1, which is the first element of 1:8. The warning appears because 8 doesn’t divide evenly into the 3 rows (or the 9 cells), so the recycling is incomplete.
+```
+```{r}
+print(scores[1, 2])
+print(scores[1, ])
+print(scores[, "Ben"])
+```
+```{r}
+print(scores[scores >= 90])
+```
+Question#3
+```{r}
+print(class(scores[1, ]))
+print(class(scores[, "Ben"]))
+R “downgrades” a single row or column of a matrix to a plain numeric vector. The result keeps its names (Ana, Ben, Cid for the row; Quiz1, Quiz2 for the column), but it is no longer a matrix.
+
+Why R does this because of by default, subsetting uses drop = TRUE, which drops any dimension of length 1. A single row or column has only one meaningful dimension left, so a 1D vector is the simplest structure that holds it. A vector is also what most functions (mean(), sum(), max()) expect, so you can use the result directly without converting it. If you want to keep the matrix shape, use scores[1, , drop = FALSE], which returns a 1x3 matrix.
+Question#4
+A logical condition like scores >= 90 produces a TRUE/FALSE matrix of the same shape as scores. When you use it as an index, R picks out only the TRUE positions. The result has an irregular number of values (3 here: 95, 92, 90). They come from scattered positions, not from a complete row or column, so they can’t be arranged back into a rectangle. R therefore returns a plain vector, and since the values no longer sit in a fixed row/column grid, the row and column names no longer describe them and are dropped.
+```
+```{r}
+print(dim(scores))
+print(nrow(scores))
+print(ncol(scores))
+
+scores_t <- t(scores)
+print(scores_t)
+print(dim(scores))
+print(dim(scores_t))
+```
+```{r}
+a <- matrix(1:4, nrow = 2)
+b <- matrix(5:8, nrow = 2)
+
+print(a + b)
+print(a * b)
+```
+```{r}
+print(a %*% b)
+Question#5
+The * pairs up matching cells, while %*% mixes entire rows with entire columns. That is why the same two matrices give different answers (5, 21, 12, 32 versus 23, 31, 34, 46).
+```
+Question#6
+```{r}
+print(dim(scores))
+print(dim(scores_t))
+The names must swap too because they are labels attached to the rows and columns, not to the numbers themselves. When transposing, what used to be a row becomes a column. In scores, the rows were the quizzes (Quiz1, Quiz2) and the columns were the students (Ana, Ben, Cid). In scores_t, the students are now the rows and the quizzes are the columns. If the names stayed in their old positions, they would label the wrong things: “Quiz1” would be attached to a row that actually holds Ana’s scores. Swapping the names keeps every value correctly labeled. For example, Ben’s Quiz1 score (92) is at scores["Quiz1", "Ben"] and also at scores_t["Ben", "Quiz1"].
+```
+```{r}
+scores_v2 <- cbind(scores, Dex = c(85, 91))
+print(scores_v2)
+```
+```{r}
+scores_v3 <- rbind(scores, Quiz3 = c(80, 88, 93))
+print(scores_v3)
+```
+Question#7
+```{r}
+bad <- cbind(scores, c(85, 91, 100))
+print(bad)
+Prediction
+The matrix has 2 rows, but the new column has 3 values, so the lengths don’t match. I expected R to fail or complain.
+R does not stop with an error. It prints a warning and still returns a matrix
+```
+Question#8
+```{r}
+sales <- matrix(c(120, 95, 110,
+                  130, 90, 105), nrow = 2, byrow = TRUE)
+colnames(sales) <- c("Jaro", "Molo", "Mandurriao")
+rownames(sales) <- c("Mon", "Tue")
+
+sales <- rbind(sales, Wed = c(125, 100, 115))
+Use rbind() when each new piece of information arrives as a new observation (a new record), and your matrix is organized with one observation per row. Use cbind() when you are adding a new variable (a new measurement) for the same set of observations.
+```
+```{r}
+arr <- array(1:12, dim = c(2, 3, 2))
+print(arr)
+```
+```{r}
+print(arr[1, 2, 2])
+print(arr[ , , 1])
+```
+```{r}
+print(dim(arr))
+Question#9
+An array needs three indices because one number can’t pinpoint a value anymore. You have to say which layer, then which row, then which column. For example, arr[1, 2, 2] means row 1, column 2 of layer 2. A matrix only needs [row, col] because there is just one layer. The largest valid index in each position is the matching number from dim(arr), so arr[3, 1, 1] would give a “subscript out of bounds” error.
+Question#10
+This would be a 3 x 3 x 3 array. The value sales[2, 1, 3] would be the number of cakes sold at Jaro in March. Another example is test scores with students as rows, quizzes as columns, and school terms as layers.
+A matrix has only two dimensions, so it can describe two things at once, such as products by branch. As soon as you add a third factor like time, there is nowhere to put it. You could stack everything into one big matrix, but that would mix the months together and you’d have to remember which rows or columns belong to which month. Or you would need a separate matrix for each month, which is hard to keep organized and compare. A 3D array keeps all three factors in one object with a clear structure, so you can pull out a whole month with sales[, , 3], a single product over time with sales[2, 1, ], or compare layers directly.
+```
+```{r}
+class_a <- matrix(c(85, 90, 78, 92), nrow = 2, byrow = TRUE,
+                   dimnames = list(c("S1", "S2"), c("Midterm", "Final")))
+class_b <- matrix(c(88, 84, 95, 91), nrow = 2, byrow = TRUE,
+                   dimnames = list(c("S3", "S4"), c("Midterm", "Final")))
+
+all_students <- rbind(class_a, class_b)
+print(all_students)
+```
+```{r}
+print(rowMeans(all_students))
+Question#11
+I chose rbind() because class_a and class_b describe different students measured on the same two scores. Both matrices have the same column names (Midterm, Final) but different row names (S1, S2 versus S3, S4). Since the columns match and the rows are new, the second matrix has to be stacked underneath the first, and stacking rows is what rbind() does.
+
+The clue is which names are shared. Shared column names mean the same variables are being measured, so new rows (new observations) are being added: use rbind(). Shared row names would mean the same students appear in both matrices with different variables, such as a Quiz score alongside Midterm and Final, so you would add columns with cbind(). Here, cbind() would line the two matrices up side by side, treating S3 and S4 as if they were extra scores for S1 and S2, which makes no sense.
+Question#12
+Since all 5 classes have the same two columns (Midterm and Final) and each class contains different students, I would stack them on top of each other using rbind(), giving the 5 matrices to the function in one go (or adding them one at a time). The columns stay the same, and the rows grow to include every student from every class. Before combining, I would check that every matrix has the columns in the same order and that no two students share a row name, so the labels stay unique.
+
+To check the result with dim(), I would first run dim() on each of the 5 matrices and add up their row counts. For example, if the classes had 2, 3, 2, 4, and 3 students, the total would be 14. Then I would run dim() on the combined matrix. It should show that total number of rows and still exactly 2 columns. If the number of rows doesn’t equal the sum, or the number of columns isn’t 2, something went wrong in the combining.
+CONCLUSION
+A matrix is a two-dimensional structure (rows and columns) that holds one data type, and it is indexed with two numbers, like scores[row, col]. An array extends this to three or more dimensions, such as rows, columns, and layers, so it needs three indices, like arr[row, col, layer]. A matrix is enough for a single table of values, while an array fits data with a third repeating factor such as time. cbind() and rbind() are useful when a dataset grows. For example, with a class record where students are rows and exams are columns, rbind() adds a new student (or a whole new class) as new rows, and cbind() adds a new exam as a new column.
+```
